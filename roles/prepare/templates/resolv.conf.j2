@@ -1,0 +1,5 @@
+{% if prepare_use_custom_dns | bool %}
+{%- for resolver_ip in custom_dns_list -%}
+nameserver {{ resolver_ip }}
+{% endfor%}
+{% else %}{% endif -%}

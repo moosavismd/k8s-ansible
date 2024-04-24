@@ -1,0 +1,24 @@
+---
+- name: Reboot server
+  ansible.builtin.reboot:
+    msg: "REBOOT SERVER. TRIGGRED BY ANSIBLE"
+  when: prepare_allow_restart | bool
+
+- name: Enable and Start NetworkManager Service
+  ansible.builtin.systemd:
+    name: NetworkManager
+    enabled: true
+    state: started
+
+- name: "Restart networking service"
+  ansible.builtin.systemd:
+    name: networking
+    state: restarted
+
+- name: Restart SSH service
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+
+- name: Make pip3 default
+  ansible.builtin.command: update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1

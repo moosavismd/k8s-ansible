@@ -1,0 +1,37 @@
+---
+- name: Set hostname to inventory name
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Add hostname to /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.0\.1 localhost'
+    line: "127.0.0.1 localhost {{ inventory_hostname }}"
+
+- name: Set DNS
+  ansible.builtin.import_tasks: dns-setter.yaml
+  tags: prepare_change_dns
+
+- name: Install packages
+  ansible.builtin.import_tasks: install-packages.yaml
+  tags: prepare_install_software
+
+- name: Apply file limits config
+  ansible.builtin.import_tasks: "file-limits.yaml"
+  tags: prepare_sysctl_conf
+
+- name: Disable automatic upgrades
+  ansible.builtin.import_tasks: disable-auto-update.yaml
+  tags: disable_auto_upgrades
+
+- name: Remove swapfile from /etc/fstab
+  ansible.posix.mount:
+    name: "swap"
+    fstype: swap
+    state: absent
+  notify: Reboot server
+  tags: prepare_unmount_swap
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

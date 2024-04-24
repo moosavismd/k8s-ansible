@@ -1,0 +1,38 @@
+---
+- name: Stop and disable systemd-resolved
+  ansible.builtin.systemd:
+    name: systemd-resolved
+    state: stopped
+    daemon_reload: false
+    enabled: false
+
+- name: Check /etc/resolv.conf is linked to anotther place or not
+  ansible.builtin.stat:
+    path: /etc/resolv.conf
+  register: resolv_conf_check_linked
+
+- name: Unlink previous resolv.conf file
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+  when:
+    - resolv_conf_check_linked.stat.islnk
+
+- name: Create new resolv.conf file
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: touch
+    mode: '0644'
+    owner: root
+    group: root
+  when: resolv_conf_check_linked.stat.islnk
+
+- name: Copy resolv.conf file
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: '0644'
+    owner: root
+    group: root
+  tags:
+    - prepare_apply_custom_dns

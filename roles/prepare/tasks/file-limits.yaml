@@ -1,0 +1,20 @@
+---
+- name: Set sysctl File Limits
+  ansible.builtin.copy:
+    src: 50-fs.conf
+    dest: /etc/sysctl.d/50-fs.conf
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Set Shell File Limits
+  ansible.builtin.copy:
+    src: 91-nofiles.conf
+    dest: /etc/security/limits.d/91-nofiles.conf
+    mode: '0644'
+    owner: root
+    group: root
+  notify: Reboot server
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
