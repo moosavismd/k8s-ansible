@@ -2,5 +2,6 @@
 ansible_ssh_user: ubuntu
 prepare_use_custom_dns: true
 custom_dns_list:
+  - 185.206.92.250
   - 4.2.2.4
   - 8.8.8.8

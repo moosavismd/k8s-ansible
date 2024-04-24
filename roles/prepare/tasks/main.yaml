@@ -33,5 +33,9 @@
   notify: Reboot server
   tags: prepare_unmount_swap
 
+- name: Install containerd
+  ansible.builtin.import_tasks: install-containerd.yaml
+  tags: install_containerd
+
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

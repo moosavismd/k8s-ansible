@@ -1,5 +1,5 @@
 ---
-- name: Install useful packages
+- name: Install packages
   ansible.builtin.apt:
     name:
       - wget
@@ -16,6 +16,7 @@
       - apt-transport-https
       - ca-certificates
       - htop
+      - gpg
     state: present
     update_cache: true
 
