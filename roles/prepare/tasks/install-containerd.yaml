@@ -28,3 +28,6 @@
       group: root
       mode: '0644'
   notify: Enable and restart containerd service
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

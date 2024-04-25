@@ -1,0 +1,25 @@
+global
+        user        haproxy
+        group       haproxy
+        daemon
+        maxconn 100000
+        nbproc  1
+        nbthread  2
+
+defaults
+        maxconn 100000
+        timeout client          600s
+        timeout server          600s
+        timeout connect         300s
+        timeout tunnel          600s
+
+frontend k8s_master_api_frontend
+        bind    0.0.0.0:6443
+        default_backend k8s_master_api_backend
+
+backend k8s_master_api_backend
+        mode                    tcp
+{% for master in groups.get("masters",[]) %}
+        server master-{{ loop.index0 }} {{ hostvars[master].ansible_ssh_host }}:6443 check
+{% endfor %}
+

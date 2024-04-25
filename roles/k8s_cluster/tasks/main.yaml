@@ -1,0 +1,30 @@
+---
+- name: Reset cluster nodes
+  ansible.builtin.import_tasks: reset-cluster.yaml
+  tags: [never,reset_cluster]
+
+- name: Install kubeadm
+  ansible.builtin.import_tasks: install-kubeadm.yaml
+  tags: install_kubeadm
+
+- name: init first master
+  ansible.builtin.import_tasks: init-master.yaml
+  tags: [never,init_master]
+
+- name: Join other masters
+  ansible.builtin.import_tasks: join-masters.yaml
+  tags: [never,join_masters]
+
+- name: Setup kubeconfig
+  ansible.builtin.import_tasks: create-kubeconfig.yaml
+  when:
+    - inventory_hostname in groups.masters
+  tags: [create_config]
+
+- name: Setup CNI
+  ansible.builtin.import_tasks: setup-cni.yaml
+  tags: [never,setup-cni]
+
+- name: Join worker nodes
+  ansible.builtin.import_tasks: join-workers.yaml
+  tags: [never,join_workers]

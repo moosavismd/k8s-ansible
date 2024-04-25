@@ -1,0 +1,5 @@
+---
+- name: install Pod network
+  shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml >> /root/pod_network_setup.log
+  when:
+    - inventory_hostname in groups.masters[0]

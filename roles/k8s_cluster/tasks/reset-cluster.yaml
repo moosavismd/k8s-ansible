@@ -1,0 +1,16 @@
+---
+- name: Reset all nodes
+  ansible.builtin.shell: kubeadm reset -f
+
+- name: Remove all kubernetes directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/etc/cni/"
+    - "/root/.kube/"
+    - "/var/lib/cni/"
+  notify: Reboot server
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

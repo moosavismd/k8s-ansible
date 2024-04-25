@@ -2,6 +2,7 @@
 - name: Set hostname to inventory name
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
+  tags: [prepare]
 
 - name: Add hostname to /etc/hosts
   ansible.builtin.lineinfile:
@@ -9,32 +10,35 @@
     regexp: '^127\.0\.0\.1 localhost'
     line: "127.0.0.1 localhost {{ inventory_hostname }}"
 
+# TODO
 - name: Add lb node to /etc/hosts
   ansible.builtin.lineinfile:
     path: /etc/hosts  # Change this to the path of your file
     regexp: 'lb.mammad.k8s'  # This regex matches lines starting with SOMETHING_VERSION=
-    line: '5.34.206.65 lb.mammad.k8s'
+    line: '5.34.205.13 lb.mammad.k8s'
+  tags: [prepare]
 
 - name: Set DNS
   ansible.builtin.import_tasks: dns-setter.yaml
-  tags: prepare_change_dns
+  tags: [prepare_change_dns, prepare]
 
 - name: Install packages
   ansible.builtin.import_tasks: install-packages.yaml
-  tags: install_packages
+  tags: [install_packages, prepare]
 
 - name: Load br_netfilter kernel module
   modprobe:
     name: br_netfilter
     state: present
+  tags: prepare
 
 - name: Apply file limits config
   ansible.builtin.import_tasks: "file-limits.yaml"
-  tags: prepare_sysctl_conf
+  tags: [prepare_sysctl_conf, prepare]
 
 - name: Disable automatic upgrades
   ansible.builtin.import_tasks: disable-auto-update.yaml
-  tags: disable_auto_upgrades
+  tags: [disable_auto_upgrades, prepare]
 
 - name: Remove swapfile from /etc/fstab
   ansible.posix.mount:
@@ -42,11 +46,11 @@
     fstype: swap
     state: absent
   notify: Reboot server
-  tags: prepare_unmount_swap
+  tags: [prepare_unmount_swap, prepare]
 
 - name: Install containerd
   ansible.builtin.import_tasks: install-containerd.yaml
-  tags: install_containerd
+  tags: [install_containerd, prepare]
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

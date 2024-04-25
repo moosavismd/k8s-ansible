@@ -1,0 +1,4 @@
+---
+- name: Reboot server
+  ansible.builtin.reboot:
+    msg: "REBOOT SERVER. TRIGGRED BY ANSIBLE"

@@ -21,3 +21,4 @@
   ansible.builtin.shell: kubeadm join lb.mammad.k8s:6443 --token {{ hostvars[groups['masters'][0]]['join_token']['stdout'] }} --discovery-token-ca-cert-hash sha256:{{ hostvars[groups['masters'][0]]['ca_cert_hash']['stdout'] }} --control-plane --certificate-key {{ hostvars[groups['masters'][0]]['certificate_key']['stdout_lines'][2] }}
   when:
     - inventory_hostname not in groups.masters[0]
+    - inventory_hostname in groups.masters

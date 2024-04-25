@@ -3,5 +3,16 @@
   gather_facts: true
   become: true
   roles:
-#    - prepare
-    - k8s_setup_masters
+    - prepare
+
+- hosts: haproxy
+  gather_facts: true
+  become: true
+  roles:
+    - haproxy
+
+- hosts: k8s
+  gather_facts: true
+  become: true
+  roles:
+    - k8s_cluster
