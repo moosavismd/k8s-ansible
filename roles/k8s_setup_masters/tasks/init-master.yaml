@@ -1,0 +1,17 @@
+---
+- name: Copy kubeadm config
+  ansible.builtin.copy:
+    src: kubeadm-config.yaml
+    dest: /root/kubeadm-config.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - inventory_hostname in groups.masters[0]
+  tags: copy_k8s_config
+
+- name: Initialize the cluster
+  shell: kubeadm init --config /root/kubeadm-config.yaml >> /root/cluster_initialized.log
+  when:
+    - inventory_hostname in groups.masters[0]
+  tags: [never, init_cluster]

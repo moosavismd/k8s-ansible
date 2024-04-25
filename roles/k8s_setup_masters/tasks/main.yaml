@@ -1,0 +1,35 @@
+---
+- name: reset all master nodes
+  ansible.builtin.shell: kubeadm reset -f
+  tags: [never, reset_masters]
+
+- name: Install kubeadm
+  ansible.builtin.import_tasks: install-kubeadm.yaml
+  tags: install_kubeadm
+
+- name: init first master
+  ansible.builtin.import_tasks: init-master.yaml
+  tags: [never,init_master]
+
+- name: Join other masters
+  ansible.builtin.import_tasks: join-masters.yaml
+  tags: [never,join_masters]
+
+- name: create .kube directory
+  file:
+    path: /root/.kube
+    state: directory
+    mode: 0755
+
+- name: copy admin.conf to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    owner: root
+    group: root
+    remote_src: yes
+
+- name: install Pod network
+  shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml >> /root/pod_network_setup.log
+  when:
+    - inventory_hostname in groups.masters[0]

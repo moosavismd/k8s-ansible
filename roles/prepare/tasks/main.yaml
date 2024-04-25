@@ -9,13 +9,24 @@
     regexp: '^127\.0\.0\.1 localhost'
     line: "127.0.0.1 localhost {{ inventory_hostname }}"
 
+- name: Add lb node to /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts  # Change this to the path of your file
+    regexp: 'lb.mammad.k8s'  # This regex matches lines starting with SOMETHING_VERSION=
+    line: '5.34.206.65 lb.mammad.k8s'
+
 - name: Set DNS
   ansible.builtin.import_tasks: dns-setter.yaml
   tags: prepare_change_dns
 
 - name: Install packages
   ansible.builtin.import_tasks: install-packages.yaml
-  tags: prepare_install_software
+  tags: install_packages
+
+- name: Load br_netfilter kernel module
+  modprobe:
+    name: br_netfilter
+    state: present
 
 - name: Apply file limits config
   ansible.builtin.import_tasks: "file-limits.yaml"

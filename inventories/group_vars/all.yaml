@@ -1,6 +1,7 @@
 ---
 ansible_ssh_user: ubuntu
 prepare_use_custom_dns: true
+prepare_allow_restart: true
 custom_dns_list:
   - 185.206.92.250
   - 4.2.2.4

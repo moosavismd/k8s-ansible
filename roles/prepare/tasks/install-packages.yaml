@@ -17,6 +17,8 @@
       - ca-certificates
       - htop
       - gpg
+      - zip
+      - unzip
     state: present
     update_cache: true
 

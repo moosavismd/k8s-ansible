@@ -1,4 +1,0 @@
-[all]
-k8s-01 ansible_ssh_host=5.34.206.65
-k8s-02 ansible_ssh_host=5.34.205.140
-k8s-03 ansible_ssh_host=5.34.205.179

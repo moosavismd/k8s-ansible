@@ -1,0 +1,23 @@
+---
+- name: Calculate ca cert hash
+  ansible.builtin.shell: openssl x509 -in /etc/kubernetes/pki/ca.crt -noout -pubkey | openssl rsa -pubin -outform DER 2>/dev/null | sha256sum | cut -d' ' -f1
+  when:
+    - inventory_hostname in groups.masters[0]
+  register: ca_cert_hash
+
+- name: Create joining token
+  ansible.builtin.shell: kubeadm token create
+  when:
+    - inventory_hostname in groups.masters[0]
+  register: join_token
+
+- name: Upload certificates
+  ansible.builtin.shell: kubeadm init phase upload-certs --upload-certs
+  when:
+    - inventory_hostname in groups.masters[0]
+  register: certificate_key
+
+- name: Join other masters
+  ansible.builtin.shell: kubeadm join lb.mammad.k8s:6443 --token {{ hostvars[groups['masters'][0]]['join_token']['stdout'] }} --discovery-token-ca-cert-hash sha256:{{ hostvars[groups['masters'][0]]['ca_cert_hash']['stdout'] }} --control-plane --certificate-key {{ hostvars[groups['masters'][0]]['certificate_key']['stdout_lines'][2] }}
+  when:
+    - inventory_hostname not in groups.masters[0]
