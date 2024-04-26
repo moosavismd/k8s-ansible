@@ -6,6 +6,7 @@
     state: present
     update_cache: true
   notify: Restart Haproxy
+  tags: haproxy
 
 - name: Configure gateway-in haproxy
   ansible.builtin.template:
@@ -15,3 +16,4 @@
     group: root
     mode: '0644'
   notify: Reload Haproxy
+  tags: haproxy

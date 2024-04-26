@@ -1,11 +1,6 @@
 # HAProxy Setup Role
 
-Install And Configure `HAproxy`  
+Simply install And Configure `HAproxy` for use as loadbalancer of k8s masters.  
 
-## Vars
-
-```yaml
-cluster_api_server_port: 8443
-master_backend_servers:    # ARRAY
-ingress_backend_servers:   # ARRAY
-```
+## Tags  
+- `haproxy`: Runs the whole role.  
