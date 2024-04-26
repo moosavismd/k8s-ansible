@@ -4,3 +4,4 @@ custom_dns_list:
   - 4.2.2.4
   - 8.8.8.8
 prepare_allow_restart: true
+upgrade_all_packages: true

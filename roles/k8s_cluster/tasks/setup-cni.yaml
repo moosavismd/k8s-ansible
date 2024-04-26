@@ -1,5 +1,11 @@
 ---
-- name: install Pod network
-  shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml >> /root/pod_network_setup.log
-  when:
-    - inventory_hostname in groups.masters[0]
+- name: Download kube-flannel manifest to the cluster.
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+    dest: /root/kube-flannel.yml
+    mode: '0664'
+
+- name: Apply kube-flannel manifest to the cluster.
+  kubernetes.core.k8s:
+    state: present
+    src: /root/kube-flannel.yml

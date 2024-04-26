@@ -5,3 +5,10 @@
 
 - name: Apply sysctl
   ansible.builtin.command: sysctl -p
+
+- name: Enable and restart containerd service
+  ansible.builtin.systemd:
+    name: containerd
+    state: restarted
+    enabled: true
+    daemon-reload: true

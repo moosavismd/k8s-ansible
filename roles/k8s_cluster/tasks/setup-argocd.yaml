@@ -1,0 +1,19 @@
+---
+- name: Download argocd manifest to the cluster.
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    dest: /root/argocd.yml
+    mode: '0664'
+
+- name: Create argocd namespace
+  kubernetes.core.k8s:
+    name: argocd
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Apply argocd manifest to the cluster.
+  kubernetes.core.k8s:
+    namespace: argocd
+    state: present
+    src: /root/argocd.yml

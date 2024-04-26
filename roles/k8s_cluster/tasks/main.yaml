@@ -1,43 +1,62 @@
 ---
 - name: Install containerd
   ansible.builtin.import_tasks: install-containerd.yaml
-  tags: [install_containerd]
+  tags: install_containerd
 
 - name: Reset cluster nodes
   ansible.builtin.import_tasks: reset-cluster.yaml
-  tags: [never,reset_cluster]
+  when:
+    - inventory_hostname in groups.k8s
+  tags: [never, reset_cluster]
 
 # In case you don't have a domain, this will set the loadbalancer domain in hostfile
 - name: Add lb node to /etc/hosts
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    regexp: "{{ lb_domain }}"  
+    regexp: "{{ lb_domain }}"
     line: "{{ hostvars[groups['haproxy'][0]]['ansible_ssh_host'] }} {{ lb_domain }}"
   when: domain_unavailable | bool
-  tags: [prepare]
 
 - name: Install kubeadm
   ansible.builtin.import_tasks: install-kubeadm.yaml
   tags: install_kubeadm
 
-- name: init first master
+- name: Init bootstrap master
   ansible.builtin.import_tasks: init-master.yaml
-  tags: [never,init_master]
+  tags: [never, init_master]
 
 - name: Join other masters
   ansible.builtin.import_tasks: join-masters.yaml
-  tags: [never,join_masters]
+  tags: join_masters
+  when:
+    - inventory_hostname in groups.masters
 
 - name: Setup kubeconfig
   ansible.builtin.import_tasks: create-kubeconfig.yaml
   when:
     - inventory_hostname in groups.masters
-  tags: [create_config]
+  tags: create_config
+
+- name: Install kubernetes module with pip
+  pip:
+    name:
+      - kubernetes
+    executable: pip3
+  when:
+    - inventory_hostname in groups.masters
 
 - name: Setup CNI
   ansible.builtin.import_tasks: setup-cni.yaml
-  tags: [never,setup-cni]
+  when:
+    - inventory_hostname in groups.masters[0]
+  tags: setup_cni
 
 - name: Join worker nodes
   ansible.builtin.import_tasks: join-workers.yaml
-  tags: [never,join_workers]
+  tags: join_workers
+
+- name: Setup argocd in cluster
+  ansible.builtin.import_tasks: setup-argocd.yaml
+  when:
+    - inventory_hostname in groups.masters[0]
+  tags: argocd

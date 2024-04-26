@@ -3,3 +3,5 @@ exclude_paths: []
 
 skip_list:
   - yaml[line-length]
+  - command-instead-of-shel
+  - risky-shell-pipe

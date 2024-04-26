@@ -1,4 +1,10 @@
 ---
-
 domain_unavailable: true
 lb_domain: "lb.mammad.k8s"
+
+reset_node: false
+
+bootstrap_master_node: false
+
+new_master_node: false
+new_worker_node: false

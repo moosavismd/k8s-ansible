@@ -35,4 +35,4 @@
 - name: Enable the Kubelet service
   ansible.builtin.systemd:
     name: kubelet
-    enabled: yes
+    enabled: true

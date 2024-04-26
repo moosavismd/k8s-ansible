@@ -1,17 +1,20 @@
 ---
 - name: Copy kubeadm config
-  ansible.builtin.copy:
-    src: kubeadm-config.yaml
+  ansible.builtin.template:
+    src: kubeadm-config.yaml.j2
     dest: /root/kubeadm-config.yaml
     owner: root
     group: root
     mode: '0644'
   when:
     - inventory_hostname in groups.masters[0]
-  tags: copy_k8s_config
+    - bootstrap_master_node | bool
 
 - name: Initialize the cluster
   shell: kubeadm init --config /root/kubeadm-config.yaml >> /root/cluster_initialized.log
+  args:
+    chdir: /root
+    creates: cluster_initialized.log
   when:
     - inventory_hostname in groups.masters[0]
-  tags: [never, init_cluster]
+    - bootstrap_master_node | bool

@@ -25,7 +25,8 @@
 - name: Upgrade system
   ansible.builtin.apt:
     upgrade: full
-  tags: [never, upgrade_all_packages]
+  when: upgrade_all_packages | bool
+  tags: upgrade_all_packages
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

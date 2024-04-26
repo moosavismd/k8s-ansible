@@ -1,16 +1,16 @@
 ---
-- hosts: all
-  gather_facts: true
-  become: true
-  roles:
-    - prepare
+# - hosts: all
+#   gather_facts: true
+#   become: true
+#   roles:
+#     - prepare
 
-- hosts: haproxy
-  gather_facts: true
-  become: true
-  roles:
-    - haproxy
-#    - keepalived
+# - hosts: haproxy
+#   gather_facts: true
+#   become: true
+#   roles:
+#     - haproxy
+# #    - keepalived
 
 - hosts: k8s
   gather_facts: true

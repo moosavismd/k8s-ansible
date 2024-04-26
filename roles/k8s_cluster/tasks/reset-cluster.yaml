@@ -1,6 +1,7 @@
 ---
-- name: Reset all nodes
-  ansible.builtin.shell: kubeadm reset -f
+- name: Reset nodes
+  ansible.builtin.command: kubeadm reset -f
+  when: reset_node | bool
 
 - name: Remove all kubernetes directories
   ansible.builtin.file:
@@ -10,7 +11,11 @@
     - "/etc/cni/"
     - "/root/.kube/"
     - "/var/lib/cni/"
+    - "/root/cluster_initialized.log"
+    - "/root/join_masters.log"
+    - "/root/join_workers.log"
   notify: Reboot server
+  when: reset_node | bool
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
