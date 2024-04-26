@@ -13,7 +13,7 @@ prepare_allow_restart: true # Allow the role to reboot the server after some cha
 
 
 ## Tags
-- `prepare`: If you use this tag, the whole role will be applied ( except for the never tags)  
+- `prepare`: If you use this tag, the whole role will be applied  
 - `upgrade_all_packages` : Uses apt upgrade to upgrade all of the OS packages to latest version ( This one is a `never` tag )  
 - `prepare_change_dns`: This only changes the dns nameservers to custom servers.  
 - `install_packages`: Installs the nessaccary packages.  
