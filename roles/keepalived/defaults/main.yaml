@@ -2,4 +2,4 @@
 router_id: 79
 virtual_ips: 192.168.0.1
 interface_name: eth0
-keepalived_password: 
+keepalived_password: secr3tPassword

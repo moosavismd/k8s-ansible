@@ -10,6 +10,7 @@
   become: true
   roles:
     - haproxy
+#    - keepalived
 
 - hosts: k8s
   gather_facts: true
