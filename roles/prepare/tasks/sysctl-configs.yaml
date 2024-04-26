@@ -7,13 +7,6 @@
     owner: root
     group: root
 
-- name: Enable ip_forward
-  ansible.posix.sysctl:
-    name: net.ipv4.ip_forward
-    value: '1'
-    state: present
-  notify: Reboot server
-
 - name: Set Shell File Limits
   ansible.builtin.copy:
     src: 91-nofiles.conf

@@ -1,5 +1,5 @@
 ---
-prepare_use_custom_dns: false
+set_custom_dns: false
 custom_dns_list:
   - 4.2.2.4
   - 8.8.8.8

@@ -1,0 +1,4 @@
+---
+
+domain_unavailable: true
+lb_domain: "lb.mammad.k8s"

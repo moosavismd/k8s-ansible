@@ -25,8 +25,8 @@
 - name: Upgrade system
   ansible.builtin.apt:
     upgrade: full
-  tags: never
   notify: Reboot server
+  tags: [never, upgrade_all_packages]
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

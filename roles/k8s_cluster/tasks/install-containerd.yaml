@@ -1,4 +1,23 @@
 ---
+- name: Load br_netfilter kernel module
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Enable ip_forward
+  ansible.posix.sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    state: present
+  notify: Apply sysctl
+
+- name: Enable ip_forward
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+  notify: Apply sysctl
+
 - name: Add Docker apt repository key.
   ansible.builtin.get_url:
     url: "https://download.docker.com/linux/ubuntu/gpg"

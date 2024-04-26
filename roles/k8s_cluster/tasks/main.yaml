@@ -1,7 +1,20 @@
 ---
+- name: Install containerd
+  ansible.builtin.import_tasks: install-containerd.yaml
+  tags: [install_containerd]
+
 - name: Reset cluster nodes
   ansible.builtin.import_tasks: reset-cluster.yaml
   tags: [never,reset_cluster]
+
+# In case you don't have a domain, this will set the loadbalancer domain in hostfile
+- name: Add lb node to /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: "{{ lb_domain }}"  
+    line: "{{ hostvars[groups['haproxy'][0]]['ansible_ssh_host'] }} {{ lb_domain }}"
+  when: domain_unavailable | bool
+  tags: [prepare]
 
 - name: Install kubeadm
   ansible.builtin.import_tasks: install-kubeadm.yaml
